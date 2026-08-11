@@ -1,0 +1,112 @@
+# ---------------------------------------------------------------------------
+# FrugalDrive – repo-root build context excludes
+#
+# Covers both stacks (.NET API + Nuxt) so that no build ships the whole repo:
+# node_modules + bin/obj + .git is easily hundreds of MB of build context and
+# destroys layer caching.
+#
+# Docker only reads the .dockerignore at the ROOT OF THE BUILD CONTEXT. This
+# file therefore applies to root-context builds
+# (context: ., dockerfile: backend/Dockerfile). Once per-service directories
+# exist and compose uses context: ./backend and context: ./frontend, each needs
+# its own .dockerignore at that directory root — this file is then ignored.
+#
+# Patterns are relative to this directory and are NOT recursive by default
+# (unlike .gitignore) — "bin/" matches only ./bin, "**/bin/" matches any depth.
+# ---------------------------------------------------------------------------
+
+# ===========================================================================
+# The heavy hitters
+# ===========================================================================
+**/node_modules/
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/artifacts/
+**/.nuxt/
+**/.output/
+**/.nitro/
+**/.data/
+**/dist/
+**/.cache/
+**/.turbo/
+**/.vite/
+
+# ===========================================================================
+# Version control & CI
+# Remove ".git/" if the build uses git-based versioning (MinVer, GitVersion).
+# ===========================================================================
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# ===========================================================================
+# IDE / editor
+# ===========================================================================
+.vs/
+.vscode/
+.idea/
+.history/
+**/*.user
+**/*.suo
+*.code-workspace
+
+# ===========================================================================
+# Secrets & machine-local config
+# ===========================================================================
+**/.env
+**/.env.*
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/appsettings.*.local.json
+**/secrets.json
+**/*.pfx
+**/*.p12
+**/*.pem
+**/*.key
+**/*.crt
+
+# ===========================================================================
+# Local databases & docker volume data
+# ===========================================================================
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/*.sqlite
+**/*.sqlite3
+.docker/data/
+docker/data/
+docker/volumes/
+**/pgdata/
+
+# ===========================================================================
+# Test output
+# ===========================================================================
+**/TestResults/
+**/*.trx
+**/coverage*
+**/playwright-report/
+**/test-results/
+**/.nyc_output/
+
+# ===========================================================================
+# Docker's own files
+# ===========================================================================
+**/docker-compose*.yml
+**/docker-compose*.yaml
+**/compose*.yml
+**/compose*.yaml
+**/.dockerignore
+
+# ===========================================================================
+# Docs & noise
+# ===========================================================================
+**/*.md
+LICENSE
+docs/
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/logs/
