@@ -171,14 +171,19 @@ healthchecksdb
 # ===========================================================================
 
 # Dependencies
+# Lockfiles (package-lock.json / pnpm-lock.yaml / yarn.lock) are deliberately
+# NOT ignored – reproducible Docker builds depend on them. Same for .nvmrc /
+# .node-version, which pin the toolchain.
 node_modules/
 .pnp
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/versions
+.yarn-integrity
+.pnpm-store/
 jspm_packages/
 web_modules/
 
@@ -202,6 +207,7 @@ dist/
 .npm/
 .rollup.cache/
 .turbo/
+.parcel-cache/
 
 # Logs
 logs/
@@ -215,10 +221,39 @@ lerna-debug.log*
 
 # Testing / tooling
 .nyc_output/
+lib-cov/
 playwright-report/
 blob-report/
 test-results/
 .vitest/
+.vscode-test/
+**/.husky/_/
+
+# npm / package tooling
+# `npm pack` and `npm publish --dry-run` drop <name>-<version>.tgz here.
+# If real .tgz assets are ever committed, add a "!path/to/file.tgz" exception.
+*.tgz
+.node_repl_history
+.lock-wscript
+
+# .npmrc is deliberately NOT ignored – projects need it for registry config.
+# Never put a token in it; reference an env var instead:
+#   //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+
+# Node process / runtime files
+pids/
+*.pid
+*.pid.lock
+*.seed
+
+# Native addon build output (node-gyp)
+**/build/Release/
+prebuilds/
+
+# Serverless / misc tooling state
+.serverless/
+.dynamodb/
+.tern-port
 
 # ===========================================================================
 # Environment variables & secrets
